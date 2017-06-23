@@ -17,7 +17,8 @@ import java.util.function.Function;
  * Created by scvzerng on 2017/6/20.
  */
 public class GenerateSwaggerModelAction extends AnAction {
-    private final String IMPORT_PACKAGE = "io.swagger.annotations";
+    private final String SWAGGER_PREFIX = "io.swagger.annotations";
+    private final String SPRING_PREFIX = "org.springframework.web.bind.annotation.";
     private Project project;
     private PsiClass psiClass;
     private PsiJavaFile psiJavaFile;
@@ -25,38 +26,101 @@ public class GenerateSwaggerModelAction extends AnAction {
     private Editor editor;
     @Override
     public void actionPerformed(AnActionEvent anActionEvent) {
-        try {
-            DataContext dataContext = anActionEvent.getDataContext();
-            this.project = CommonDataKeys.PROJECT.getData(dataContext);
-            this.psiJavaFile = (PsiJavaFile) anActionEvent.getData(LangDataKeys.PSI_FILE);
-            this.editor = anActionEvent.getData(PlatformDataKeys.EDITOR);
-            checkLanguage();
-            new WriteCommandAction.Simple(project,psiJavaFile){
-                @Override
-                protected void run() throws Throwable {
-                    addClassAnnotation();
-                    checkImports();
-                    checkFields();
-                    checkMethods();
-                }
-            }.execute();
-        }catch (Exception e){
-            Messages.showErrorDialog(e.getMessage(),"错误信息");
+        PsiFile psiFile = anActionEvent.getData(DataKeys.PSI_FILE);
+        if(psiFile instanceof PsiJavaFile){
+           FileClass fileClass = new FileClass((PsiJavaFile) psiFile);
+           fileClass.process(clazz->{
+
+           });
+            System.out.println(fileClass.getClasses());
         }
+//            DataContext dataContext = anActionEvent.getDataContext();
+//            this.project = CommonDataKeys.PROJECT.getData(dataContext);
+//            this.psiJavaFile = (PsiJavaFile) anActionEvent.getData(LangDataKeys.PSI_FILE);
+//            this.editor = anActionEvent.getData(PlatformDataKeys.EDITOR);
+//            checkLanguage();
+//            new WriteCommandAction.Simple(project,psiJavaFile){
+//                @Override
+//                protected void run() throws Throwable {
+//                    addClassAnnotation();
+//                    checkImports();
+//                    checkFields();
+//                    checkMethods();
+//                }
+//            }.execute();
+//        }catch (Exception e){
+//            Messages.showErrorDialog(e.getMessage(),"错误信息");
+//        }
     }
 
     private void checkMethods(){
+        //    @ApiOperation(value = "创建口碑活动",notes = "创建口碑活动",response =CountryExample.class, httpMethod = "POST",responseContainer = "Map")
+
         PsiMethod[] methods = this.psiClass.getMethods();
+        Arrays.stream(methods).filter(this::findRestMethod).map(ApiOperation::new).forEach(apiOperation -> {
+           apiOperation.getComment().addAfter(this.elementFactory.createAnnotationFromText(apiOperation.toString(),psiClass),apiOperation.getComment());
+        });
+    }
+   class ApiOperation {
+        private String httpMethod;
+        private String returnType;
+        private String doc;
+        private PsiComment comment;
+        public ApiOperation(PsiMethod psiMethod){
+            PsiComment comment = psiMethod.getDocComment();
+            this.comment = comment;
+            this.doc = this.text(comment);
+            PsiAnnotation annotation = getHttpAnnotation(psiMethod);
+            String annotationText = annotation.getText();
+            this.httpMethod =annotationText.substring(1,annotationText.indexOf("Mapping")).toUpperCase();
+            this.returnType = psiMethod.getReturnType().getPresentableText();
+        }
+       public String getHttpMethod() {
+           return httpMethod;
+       }
+
+       public void setHttpMethod(String httpMethod) {
+           this.httpMethod = httpMethod;
+       }
+
+       public PsiComment getComment() {
+           return comment;
+       }
+       private String text(PsiComment comment){
+            if(comment==null) return "";
+
+            return comment.getText();
+       }
+       @Override
+       public String toString() {
+           return String.format("@ApiOperation(value = \"%s\",notes = \"%s\",response =%s.class, httpMethod = \"%s\")",doc,doc,returnType,httpMethod);
+       }
+   }
+    private boolean findRestMethod(PsiMethod method){
+
+        return method.getModifierList().findAnnotation(SPRING_PREFIX+"GetMapping")!=null
+                ||method.getModifierList().findAnnotation(SPRING_PREFIX+"PutMapping")!=null||
+        method.getModifierList().findAnnotation(SPRING_PREFIX+"PostMapping")!=null||
+        method.getModifierList().findAnnotation(SPRING_PREFIX+"DeleteMapping")!=null;
+    }
+
+    private PsiAnnotation getHttpAnnotation(PsiMethod method){
+        PsiAnnotation annotation = method.getModifierList().findAnnotation(SPRING_PREFIX+"GetMapping");
+        if(annotation==null) annotation = method.getModifierList().findAnnotation(SPRING_PREFIX+"PutMapping");
+        if(annotation==null) annotation = method.getModifierList().findAnnotation(SPRING_PREFIX+"PostMapping");
+        if(annotation==null) annotation = method.getModifierList().findAnnotation(SPRING_PREFIX+"DeleteMapping");
+      return annotation;
     }
     private void checkFields() {
-        PsiField[] psiFields = this.psiClass.getAllFields();
-        Arrays.stream(psiFields)
-                .filter(psiField -> !psiField.getText().contains("@ApiModelProperty"))
-                .forEach(psiField -> {
-                    PsiComment comment = psiField.getDocComment();
-                    addAnnotation(comment,psiField,doc->"@ApiModelProperty(notes=\""+doc+"\")");
-                });
-        ;
+        if(!isRestController(psiClass.getModifierList())){
+            PsiField[] psiFields = this.psiClass.getAllFields();
+            Arrays.stream(psiFields)
+                    .filter(psiField -> !psiField.getText().contains("@ApiModelProperty"))
+                    .forEach(psiField -> {
+                        PsiComment comment = psiField.getDocComment();
+                        addAnnotation(comment,psiField,doc->"@ApiModelProperty(notes=\""+doc+"\")");
+                    });
+        }
     }
     private String getText(PsiComment comment){
         if(comment==null) return "";
@@ -77,15 +141,23 @@ public class GenerateSwaggerModelAction extends AnAction {
 
     }
     private void addClassAnnotation(){
-        if(!this.psiClass.getText().contains("@ApiModel")){
-            PsiComment comment = this.psiClass.getDocComment();
-            addAnnotation(comment,psiClass,doc->"@ApiModel(description=\""+doc+"\")");
+        PsiModifierList modifierList = this.psiClass.getModifierList();
+        PsiComment comment = this.psiClass.getDocComment();
+        if(modifierList.findAnnotation(SWAGGER_PREFIX+".ApiModel")==null){
+            if(!isRestController(modifierList)){
+                addAnnotation(comment,psiClass,doc->"@ApiModel(description=\""+doc+"\")");
+            }
+        }
+        if(isRestController(modifierList)){
+            if(modifierList.findAnnotation(SWAGGER_PREFIX+".Api")==null){
+                addAnnotation(comment,psiClass,doc->"@Api(description=\""+doc+"\")");
+            }
         }
 
-        if(this.psiClass.getText().contains("@RestController")){
-            PsiComment comment = this.psiClass.getDocComment();
-            addAnnotation(comment,psiClass,doc->"@Api(description=\""+doc+"\")");
-        }
+    }
+
+    private boolean isRestController(PsiModifierList modifierList){
+        return modifierList.findAnnotation(SPRING_PREFIX+"RestController")!=null;
     }
 
     private void addAnnotation(PsiComment comment, PsiElement element, Function<String,String> function){
@@ -103,14 +175,14 @@ public class GenerateSwaggerModelAction extends AnAction {
     private void checkImports(){
         PsiImportList importList = psiJavaFile.getImportList();
        if(!hasClassImport(importList)&&!hasPackageImport(importList)){
-           importList.add( elementFactory.createImportStatementOnDemand(IMPORT_PACKAGE));
+           importList.add( elementFactory.createImportStatementOnDemand(SWAGGER_PREFIX));
        }
     }
 
     private boolean hasClassImport(PsiImportList importList){
-       return importList.findSingleClassImportStatement(IMPORT_PACKAGE+".ApiModel")!=null || importList.findSingleClassImportStatement(IMPORT_PACKAGE+".ApiModelProperty")!=null;
+       return importList.findSingleClassImportStatement(SWAGGER_PREFIX +".ApiModel")!=null || importList.findSingleClassImportStatement(SWAGGER_PREFIX +".ApiModelProperty")!=null;
     }
     private boolean hasPackageImport(PsiImportList importList){
-        return importList.findOnDemandImportStatement(IMPORT_PACKAGE)!=null;
+        return importList.findOnDemandImportStatement(SWAGGER_PREFIX)!=null;
     }
 }
