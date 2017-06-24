@@ -1,0 +1,37 @@
+package com.yazuo.xiaoya.swagger.entity;
+
+import com.intellij.psi.PsiAnnotation;
+import com.yazuo.xiaoya.swagger.utils.AnnotationUtil;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: Administrator
+ * Year: 2017-2017/6/24-14:10
+ * Project:idea-swagger-plugin
+ * Package:com.yazuo.xiaoya.swagger
+ * To change this template use File | Settings | File Templates.
+ */
+public class ApiOperation {
+    private String value;
+    private String notes;
+    private String response;
+    private String httpMethod;
+    public ApiOperation(Method method){
+        PsiAnnotation annotation = AnnotationUtil.getHttpAnnotation(method.getMethod());
+        String annotationText = annotation.getText();
+        this.httpMethod =annotationText.substring(1,annotationText.indexOf("Mapping")).toUpperCase();
+        String text = method.getMethod().getReturnType().getPresentableText();
+        this.response = text.contains("<")?method.getDocument().getReturnTag().get().getValue():text;
+        this.notes = method.getDocument().firstLine();
+        this.value = method.getDocument().firstLine();
+    }
+
+
+    @Override
+    public String toString() {
+        return String.format("@ApiOperation(value = \"%s\",notes = \"%s\",response =%s.class, httpMethod = \"%s\")",value,notes,response,httpMethod);
+    }
+
+
+
+}

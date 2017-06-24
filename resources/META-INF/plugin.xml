@@ -30,7 +30,7 @@
 
   <actions>
     <!-- Add your actions here -->
-    <action id="swaggerDoc" class="com.yazuo.xiaoya.swagger.GenerateSwaggerModelAction" text="生成swagger注解">
+    <action id="swaggerDoc" class="com.yazuo.xiaoya.swagger.actions.GenerateSwaggerModelAction" text="生成swagger注解">
 
       <add-to-group group-id="GenerateGroup" anchor="last"/>
 
