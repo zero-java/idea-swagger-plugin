@@ -2,7 +2,7 @@
   <id>com.yazuo.xiaoya</id>
   <name>swagger注解插件</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="842494771@qq.com" url="https://github.com/scvzerng/idea-swagger-plugin.git">scvzerng</vendor>
 
   <description><![CDATA[
       通过注释来生成swagger注解.<br>
