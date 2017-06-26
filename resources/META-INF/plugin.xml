@@ -1,11 +1,11 @@
 <idea-plugin>
-  <id>com.your.company.unique.plugin.id</id>
-  <name>Plugin display name here</name>
+  <id>com.yazuo.xiaoya</id>
+  <name>swagger注解插件</name>
   <version>1.0</version>
   <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
+      通过注释来生成swagger注解.<br>
       <em>most HTML tags may be used</em>
     ]]></description>
 
