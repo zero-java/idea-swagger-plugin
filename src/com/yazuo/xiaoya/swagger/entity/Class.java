@@ -38,7 +38,7 @@ public class Class {
         this.javaFile = javaFile;
         this.document = new Document(psiClass.getDocComment(),psiClass);
         this.methods = stream(this.psiClass.getMethods()).map(Method::new).collect(toList());
-        this.fields = stream(this.psiClass.getAllFields()).map(Field::new).collect(toList());
+        this.fields = stream(this.psiClass.getAllFields()).filter(psiField -> psiField.getText().contains("private")&&!psiField.getText().contains("static")&&!psiField.getText().contains("final")).map(Field::new).collect(toList());
     }
 
     public PsiClass getPsiClass() {

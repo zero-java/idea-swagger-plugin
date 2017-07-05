@@ -35,6 +35,7 @@
       <add-to-group group-id="GenerateGroup" anchor="last"/>
 
     </action>
+
   </actions>
 
   <application-components>

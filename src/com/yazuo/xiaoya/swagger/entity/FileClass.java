@@ -1,11 +1,14 @@
 package com.yazuo.xiaoya.swagger.entity;
 
 import com.intellij.psi.PsiJavaFile;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 /**
  *文件类
@@ -22,7 +25,8 @@ public class FileClass {
     private PsiJavaFile javaFile;
     public FileClass(PsiJavaFile psiFile) {
         this.javaFile = psiFile;
-        this.classes = stream(psiFile.getClasses()).map(psiClass -> new Class(psiClass,javaFile)).collect(Collectors.toList());
+        this.classes = stream(psiFile.getClasses()).map(psiClass -> new Class(psiClass,javaFile)).collect(toList());
+        this.classes.addAll(this.classes.stream().map(clazz->clazz.getPsiClass().getAllInnerClasses()).flatMap(Arrays::stream).map(psiClass->new Class(psiClass,javaFile)).collect(toList()));
 
     }
 
