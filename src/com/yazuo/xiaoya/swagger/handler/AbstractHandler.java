@@ -31,7 +31,8 @@ public abstract class AbstractHandler implements AnnotationHandler {
         this.elementFactory = JavaPsiFacade.getElementFactory(this.project);
         this.clazz = clazz;
         this.annotations = this.clazz.getPsiClass().getModifierList();
+        checkImports();
     }
 
-
+    protected abstract void checkImports();
 }

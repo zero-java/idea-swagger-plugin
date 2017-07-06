@@ -35,7 +35,11 @@
       <add-to-group group-id="GenerateGroup" anchor="last"/>
 
     </action>
+    <action id="fastjsonAnnotation" class="com.yazuo.xiaoya.swagger.actions.FastJsonSwaggerModelAction" text="生成fastjson注解">
 
+      <add-to-group group-id="GenerateGroup" anchor="last"/>
+
+    </action>
   </actions>
 
   <application-components>

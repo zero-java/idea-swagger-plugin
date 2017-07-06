@@ -19,13 +19,12 @@ import static com.yazuo.xiaoya.swagger.constanst.Constants.SWAGGER_PREFIX;
 public abstract class SwaggerAnnotationHandler extends AbstractHandler {
     public SwaggerAnnotationHandler(Project project, Class clazz) {
         super(project, clazz);
-        checkImports();
     }
 
     /**
      * 检查是否导入了必须的包
      */
-    private void checkImports(){
+    protected void checkImports(){
         PsiImportList importList = clazz.getJavaFile().getImportList();
         if(!hasPackageImport(importList)){
             importList.add( elementFactory.createImportStatementOnDemand(SWAGGER_PREFIX));
