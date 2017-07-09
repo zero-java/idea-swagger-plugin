@@ -21,7 +21,7 @@ public class FastJsonSwaggerModelAction extends AnAction {
         DataContext dataContext = anActionEvent.getDataContext();
         PsiFile psiFile = anActionEvent.getData(DataKeys.PSI_FILE);
         Project project = CommonDataKeys.PROJECT.getData(dataContext);
-        FileClass fileClass = new FileClass((PsiJavaFile) psiFile);
+        FileClass fileClass = new FileClass((PsiJavaFile) psiFile,project);
         new WriteCommandAction.Simple(project,psiFile){
             @Override
             protected void run() throws Throwable {

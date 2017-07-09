@@ -1,6 +1,9 @@
 package com.yazuo.xiaoya.swagger.entity;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.PsiShortNamesCache;
 
 import java.util.*;
 
@@ -28,18 +31,19 @@ public class Class {
      * 类字段
      */
     private List<Field> fields;
+
     /**
      * 类的java文件
      */
     private PsiJavaFile javaFile;
     public Class(PsiClass psiClass,PsiJavaFile javaFile) {
-
         this.psiClass = psiClass;
         this.javaFile = javaFile;
         this.document = new Document(psiClass.getDocComment(),psiClass);
         this.methods = stream(this.psiClass.getMethods()).map(Method::new).collect(toList());
         this.fields = stream(this.psiClass.getAllFields()).filter(psiField -> psiField.getText().contains("private")&&!psiField.getText().contains("static")&&!psiField.getText().contains("final")).map(Field::new).collect(toList());
     }
+
 
     public PsiClass getPsiClass() {
         return psiClass;

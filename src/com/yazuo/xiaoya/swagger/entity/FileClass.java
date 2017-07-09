@@ -1,9 +1,11 @@
 package com.yazuo.xiaoya.swagger.entity;
 
-import com.intellij.psi.PsiJavaFile;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.PsiShortNamesCache;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -19,15 +21,21 @@ public class FileClass {
      * 文件拥有的所有类
      */
     private List<Class> classes;
+    private Project project;
+    private JavaPsiFacade javaPsiFacade;
+    private Set<PsiClass> psiClasses;
     /**
      * java文件
      */
-    private PsiJavaFile javaFile;
-    public FileClass(PsiJavaFile psiFile) {
-        this.javaFile = psiFile;
-        this.classes = stream(psiFile.getClasses()).map(psiClass -> new Class(psiClass,javaFile)).collect(toList());
-        this.classes.addAll(this.classes.stream().map(clazz->clazz.getPsiClass().getAllInnerClasses()).flatMap(Arrays::stream).map(psiClass->new Class(psiClass,javaFile)).collect(toList()));
-
+    public FileClass(PsiJavaFile psiFile, Project project) {
+        this.project = project;
+        this.javaPsiFacade = JavaPsiFacade.getInstance(project);
+        psiClasses = new HashSet<>();
+        psiClasses.addAll(Arrays.asList(psiFile.getClasses()));
+        psiClasses.addAll(psiClasses.stream()
+                .map(PsiClass::getAllInnerClasses).flatMap(Arrays::stream).collect(toList()));
+        new HashSet<>(psiClasses).forEach(psiClass -> psiClasses.addAll(getFieldClasses(psiClass)));
+        this.classes = psiClasses.stream().distinct().map(psiClass -> new Class(psiClass,(PsiJavaFile) psiClass.getContainingFile())).collect(toList());
     }
 
     public List<Class> getClasses() {
@@ -38,13 +46,33 @@ public class FileClass {
         this.classes = classes;
     }
 
-    public PsiJavaFile getJavaFile() {
-        return javaFile;
+
+
+    private Set<PsiClass> getFieldClasses(PsiClass psiClass){
+
+        Set<PsiClass> psiClassSet = new HashSet<>();
+        psiClassSet.add(psiClass);
+        stream(psiClass.getAllFields()).map(PsiField::getTypeElement)
+                .map(PsiTypeElement::getInnermostComponentReferenceElement)
+                .map(psiJavaCodeReferenceElement -> {
+                    if(psiJavaCodeReferenceElement.getTypeParameters().length==0){
+                        return new String[]{psiJavaCodeReferenceElement.getCanonicalText()};
+                    }else{
+                        List<String> paramsTypes = stream(psiJavaCodeReferenceElement.getTypeParameters()).map(PsiType::getCanonicalText).collect(toList());
+                        String[] typeStringArray = new String[paramsTypes.size()];
+                        return paramsTypes.toArray(typeStringArray);
+                    }
+                }).flatMap(Arrays::stream)
+                .filter(typeString->!typeString.startsWith("java."))
+                .map(clazz->javaPsiFacade.findClass(clazz,GlobalSearchScope.projectScope(project)))
+                .forEach(clazz -> {
+                    if(psiClasses.contains(clazz)) return ;
+                    psiClassSet.addAll(getFieldClasses(clazz));
+                    psiClassSet.addAll(stream(clazz.getAllInnerClasses()).collect(toList()));
+                });
+        return psiClassSet;
     }
 
-    public void setJavaFile(PsiJavaFile javaFile) {
-        this.javaFile = javaFile;
-    }
 
     /**
      * 对java文件拥有的类进行处理

@@ -27,6 +27,7 @@ public abstract class AbstractHandler implements AnnotationHandler {
      */
     protected PsiModifierList annotations;
     public AbstractHandler(Project project,Class clazz) {
+
         this.project = project;
         this.elementFactory = JavaPsiFacade.getElementFactory(this.project);
         this.clazz = clazz;
@@ -35,4 +36,5 @@ public abstract class AbstractHandler implements AnnotationHandler {
     }
 
     protected abstract void checkImports();
+
 }
