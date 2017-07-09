@@ -5,13 +5,19 @@
   <vendor email="842494771@qq.com" url="https://github.com/scvzerng/idea-swagger-plugin.git">scvzerng</vendor>
 
   <description><![CDATA[
-      通过注释来生成swagger注解.<br>
-      <em>most HTML tags may be used</em>
+      通过注释来生成swagger,fastjson注解.<br>
+      alt+insert 使用
+      <ul>
+         <li><em>生成swagger相关基本注解</em></li>
+         <li><em>生成fastjson @JSONField注解 驼峰转换为下划线为首选名 驼峰列为候选字段名</em></li>
+      </ul>
     ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      功能增强:<br>
+      <ul>
+         <li><em>自动扫描关联实体添加注解</em></li>
+      </ul>
     ]]>
   </change-notes>
 
