@@ -54,6 +54,7 @@ public class FileClass {
         psiClassSet.add(psiClass);
         stream(psiClass.getAllFields()).map(PsiField::getTypeElement)
                 .map(PsiTypeElement::getInnermostComponentReferenceElement)
+                .filter(Objects::nonNull)
                 .map(psiJavaCodeReferenceElement -> {
                     if(psiJavaCodeReferenceElement.getTypeParameters().length==0){
                         return new String[]{psiJavaCodeReferenceElement.getCanonicalText()};
@@ -65,6 +66,7 @@ public class FileClass {
                 }).flatMap(Arrays::stream)
                 .filter(typeString->!typeString.startsWith("java."))
                 .map(clazz->javaPsiFacade.findClass(clazz,GlobalSearchScope.projectScope(project)))
+                .filter(Objects::nonNull)
                 .forEach(clazz -> {
                     if(psiClasses.contains(clazz)) return ;
                     psiClassSet.addAll(getFieldClasses(clazz));
