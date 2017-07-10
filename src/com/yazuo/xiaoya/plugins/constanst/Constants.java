@@ -10,7 +10,7 @@ package com.yazuo.xiaoya.plugins.constanst;
  */
 
 public final class Constants {
-    public static final String SWAGGER_PREFIX = "io.plugins.annotations";
+    public static final String SWAGGER_PREFIX = "io.swagger.annotations";
     public static final String SPRING_PREFIX = "org.springframework.web.bind.annotation.";
     public static final String FAST_JSON_PREFIX="com.alibaba.fastjson.annotation";
 
