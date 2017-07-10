@@ -36,12 +36,12 @@
 
   <actions>
     <!-- Add your actions here -->
-    <action id="swaggerDoc" class="com.yazuo.xiaoya.swagger.actions.GenerateSwaggerModelAction" text="生成swagger注解">
+    <action id="swaggerDoc" class="com.yazuo.xiaoya.plugins.annotation.swagger.action.GenerateSwaggerModelAction" text="生成swagger注解">
 
       <add-to-group group-id="GenerateGroup" anchor="last"/>
 
     </action>
-    <action id="fastjsonAnnotation" class="com.yazuo.xiaoya.swagger.actions.FastJsonSwaggerModelAction" text="生成fastjson注解">
+    <action id="fastjsonAnnotation" class="com.yazuo.xiaoya.plugins.annotation.fastjson.action.FastJsonSwaggerModelAction" text="生成fastjson注解">
 
       <add-to-group group-id="GenerateGroup" anchor="last"/>
 

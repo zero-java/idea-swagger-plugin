@@ -1,4 +1,4 @@
-package com.yazuo.xiaoya.swagger.entity;
+package com.yazuo.xiaoya.plugins.entity;
 
 import com.intellij.psi.PsiMethod;
 

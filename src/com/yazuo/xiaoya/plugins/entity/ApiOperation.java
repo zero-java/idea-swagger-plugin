@@ -1,14 +1,14 @@
-package com.yazuo.xiaoya.swagger.entity;
+package com.yazuo.xiaoya.plugins.entity;
 
 import com.intellij.psi.PsiAnnotation;
-import com.yazuo.xiaoya.swagger.utils.AnnotationUtil;
+import com.yazuo.xiaoya.plugins.utils.AnnotationUtil;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Administrator
  * Year: 2017-2017/6/24-14:10
- * Project:idea-swagger-plugin
- * Package:com.yazuo.xiaoya.swagger
+ * Project:idea-plugins-plugin
+ * Package:com.yazuo.xiaoya.plugins
  * To change this template use File | Settings | File Templates.
  */
 public class ApiOperation {

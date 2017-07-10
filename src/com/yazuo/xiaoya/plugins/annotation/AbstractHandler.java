@@ -1,9 +1,9 @@
-package com.yazuo.xiaoya.swagger.handler;
+package com.yazuo.xiaoya.plugins.annotation;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.yazuo.xiaoya.swagger.entity.Class;
-import com.yazuo.xiaoya.swagger.handler.AnnotationHandler;
+import com.yazuo.xiaoya.plugins.annotation.AnnotationHandler;
+import com.yazuo.xiaoya.plugins.entity.Class;
 
 /**
  *
