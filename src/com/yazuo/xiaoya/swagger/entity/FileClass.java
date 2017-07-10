@@ -67,6 +67,7 @@ public class FileClass {
                 .filter(typeString->!typeString.startsWith("java."))
                 .map(clazz->javaPsiFacade.findClass(clazz,GlobalSearchScope.projectScope(project)))
                 .filter(Objects::nonNull)
+                .filter(clazz->!clazz.getText().contains("enum"))
                 .forEach(clazz -> {
                     if(psiClasses.contains(clazz)) return ;
                     psiClassSet.addAll(getFieldClasses(clazz));

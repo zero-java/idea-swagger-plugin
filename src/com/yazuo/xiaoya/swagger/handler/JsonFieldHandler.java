@@ -15,8 +15,17 @@ import static com.yazuo.xiaoya.swagger.constanst.Constants.SWAGGER_PREFIX;
  * Created by scvzerng on 2017/7/6.
  */
 public class JsonFieldHandler extends AbstractHandler {
+    private String format;
     public JsonFieldHandler(Project project, Class clazz) {
         super(project, clazz);
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
     }
 
     @Override
@@ -41,7 +50,13 @@ public class JsonFieldHandler extends AbstractHandler {
             String alternateNames = psiField.getName();
             String name = alternateNames.replaceAll("([A-Z])","_$1").toLowerCase();
             if(name.equals(alternateNames)) return ;
-            PsiAnnotation annotation = elementFactory.createAnnotationFromText("@JSONField(name=\""+name+"\",alternateNames=\""+alternateNames+"\")",clazz.getPsiClass());
+            PsiAnnotation annotation = null;
+            if(psiField.getType().getCanonicalText().contains("java.util.Date")){
+                annotation  = elementFactory.createAnnotationFromText("@JSONField(name=\""+name+"\",alternateNames=\""+alternateNames+"\""+(format==null?"":"format=\""+format+"\"")+")",clazz.getPsiClass());
+            }else{
+                annotation  = elementFactory.createAnnotationFromText("@JSONField(name=\""+name+"\",alternateNames=\""+alternateNames+"\")",clazz.getPsiClass());
+
+            }
             field.getDocument().addAnnotation(annotation);
         });
     }
