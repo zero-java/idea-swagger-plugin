@@ -49,10 +49,11 @@ public class JsonFieldHandler extends AbstractHandler {
             Optional.ofNullable(field.getField().getModifierList().findAnnotation("com.alipay.api.internal.mapping.ApiListField")).ifPresent(PsiElement::delete);
             String alternateNames = psiField.getName();
             String name = alternateNames.replaceAll("([A-Z])","_$1").toLowerCase();
-            if(name.equals(alternateNames)) return ;
+            String type = psiField.getType().getCanonicalText();
+            if(name.equals(alternateNames)&&!type.contains("java.util.Date")) return ;
             PsiAnnotation annotation = null;
-            if(psiField.getType().getCanonicalText().contains("java.util.Date")){
-                annotation  = elementFactory.createAnnotationFromText("@JSONField(name=\""+name+"\",alternateNames=\""+alternateNames+"\""+(format==null?"":"format=\""+format+"\"")+")",clazz.getPsiClass());
+            if(type.contains("java.util.Date")){
+                annotation  = elementFactory.createAnnotationFromText("@JSONField(name=\""+name+"\",alternateNames=\""+alternateNames+"\""+(format==null?"":",format=\""+format+"\"")+")",clazz.getPsiClass());
             }else{
                 annotation  = elementFactory.createAnnotationFromText("@JSONField(name=\""+name+"\",alternateNames=\""+alternateNames+"\")",clazz.getPsiClass());
 
