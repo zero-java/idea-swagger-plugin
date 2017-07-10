@@ -1,6 +1,7 @@
-package com.yazuo.xiaoya.plugins.entity;
+package com.yazuo.xiaoya.plugins.annotation.swagger.entity;
 
 import com.intellij.psi.PsiAnnotation;
+import com.yazuo.xiaoya.plugins.entity.Method;
 import com.yazuo.xiaoya.plugins.utils.AnnotationUtil;
 
 /**

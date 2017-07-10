@@ -2,8 +2,7 @@ package com.yazuo.xiaoya.plugins.annotation.swagger;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiAnnotation;
-import com.yazuo.xiaoya.plugins.annotation.swagger.SwaggerAnnotationHandler;
-import com.yazuo.xiaoya.plugins.entity.ApiOperation;
+import com.yazuo.xiaoya.plugins.annotation.swagger.entity.ApiOperation;
 import com.yazuo.xiaoya.plugins.entity.Class;
 import com.yazuo.xiaoya.plugins.entity.Document;
 import com.yazuo.xiaoya.plugins.entity.Method;
