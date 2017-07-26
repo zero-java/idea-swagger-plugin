@@ -2,9 +2,10 @@ package com.yazuo.xiaoya.plugins.entity;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.xml.XmlTag;
+import com.yazuo.xiaoya.plugins.utils.ReflectUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import static java.util.Arrays.stream;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -32,20 +33,20 @@ public class PomEntity {
     public PomEntity(XmlTag root) {
         this.root = root;
         // add dependencies
-        dependencies = Arrays.stream(root.getSubTags())
+        dependencies = stream(root.getSubTags())
                 .filter(isNotParent())
                 .filter(isNotSelf())
                 .filter(isDependencies())
-                .flatMap(dependencies->Arrays.stream(dependencies.getSubTags()))
-                .map(dependencyTag-> convertDependency(dependencyTag.getSubTags())).collect(toList());
+                .flatMap(dependencies->stream(dependencies.getSubTags()))
+                .map(dependencyTag-> stream(dependencyTag.getSubTags()).collect(ReflectUtil.toBean(Dependency::new, XmlTag::getLocalName))).collect(toList());
         // add parent
         if(parent!=null){
-            dependencies.add(convertDependency(parent.getSubTags()));
+            dependencies.add(stream(parent.getSubTags()).collect(ReflectUtil.toBean(Dependency::new, XmlTag::getLocalName)));
         }
         // add self
         if(self.size()>1){
             XmlTag[] selfArray = new XmlTag[self.size()];
-            dependencies.add(convertDependency(self.toArray(selfArray)));
+            dependencies.add(stream(this.self.toArray(selfArray)).collect(ReflectUtil.toBean(Dependency::new, XmlTag::getLocalName)));
         }
     }
 
@@ -55,22 +56,6 @@ public class PomEntity {
 
     public List<Dependency> getDependencies() {
         return dependencies;
-    }
-
-    private Dependency convertDependency(XmlTag[] tags){
-        Dependency dependency = new Dependency();
-        for(XmlTag tag : tags){
-            if(tag.getLocalName().equals(TAG_GROUP_ID)){
-                dependency.setGroupId(tag);
-            }
-            if(tag.getLocalName().equals(TAG_VERSION)){
-                dependency.setVersion(tag);
-            }
-            if(tag.getLocalName().equals(TAG_ARTIFACT_ID)){
-                dependency.setArtifactId(tag);
-            }
-        }
-        return dependency;
     }
 
     /**
