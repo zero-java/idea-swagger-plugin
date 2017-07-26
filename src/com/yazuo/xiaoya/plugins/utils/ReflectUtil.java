@@ -13,20 +13,18 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 /**
+ * 反射工具类
  * Created by scvzerng on 2017/7/26.
  */
 public class ReflectUtil {
-    public static<T> void setValue(T entity, Supplier<String> key,Supplier<Object> value){
-        try {
-            Field field = entity.getClass().getDeclaredField(key.get());
-            field.setAccessible(true);
-            field.set(entity,value.get());
-            field.setAccessible(false);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-           throw new RuntimeException(e);
-        }
-    }
-
+    /**
+     * 实体属性填充收集器
+     * @param supplier 实体提供者
+     * @param function 字段名提供者 根据传入的对象来生成
+     * @param <T> 实体类型
+     * @param <I> 输入实体
+     * @return
+     */
     public static<T,I> Collector<I, T, T> toBean(Supplier<T> supplier,Function<I,String> function){
         return new Collector<I,T,T>(){
             @Override
