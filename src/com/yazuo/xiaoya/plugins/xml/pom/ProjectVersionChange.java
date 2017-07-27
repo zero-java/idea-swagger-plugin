@@ -14,7 +14,11 @@ import com.intellij.psi.xml.XmlTag;
 import com.yazuo.xiaoya.plugins.entity.Dependency;
 import com.yazuo.xiaoya.plugins.entity.PomEntity;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -39,30 +43,19 @@ public class ProjectVersionChange extends AnAction {
         Project project = anActionEvent.getProject();
         String version = Messages.showInputDialog("请输入版本号","修改依赖版本", AllIcons.Actions.Edit);
         if(version==null||version.trim().equals("")) return;
-        List<XmlFile> files = Arrays
-                .stream(FilenameIndex.getFilesByName(project,"pom.xml", GlobalSearchScope.projectScope(project)))
+        List<XmlFile> files =
+                stream(FilenameIndex.getFilesByName(project,"pom.xml", GlobalSearchScope.projectScope(project)))
                 .filter(psiFile -> psiFile instanceof XmlFileImpl)
                 .map(psiFile -> (XmlFile)psiFile).collect(toList());
         WriteCommandAction.runWriteCommandAction(project,()-> files.stream()
                 .map(XmlFile::getRootTag)
                 .map(PomEntity::new)
                 .filter(PomEntity::isNotPom)
-                .flatMap(pomEntity -> pomEntity.getDependencies().stream())
+                .flatMap(getAllDependency())
                 .filter(isNotParent())
                 .filter(isXiaoya())
-                .filter(dependency -> !filter.contains(dependency.getArtifactId().getText().trim().replaceAll("<artifactId>","")
-                        .replaceAll("</artifactId>","").trim()))
-                .map(dependency -> {
-                    if(dependency.getVersion()==null){
-                        XmlTag parent = dependency.getArtifactId().getParentTag();
-                        XmlTag versionTag = parent.createChildTag("version",parent.getNamespace(),version,false);
-                        parent.addSubTag(versionTag,false);
-                        dependency.setVersion(versionTag);
-                    }
-                    return dependency;
-                })
-
-
+                .filter(skip())
+                .map(checkVersion(version))
                 .map(Dependency::getVersion)
                 .filter(Objects::nonNull)
                 .map(XmlTag::getValue)
@@ -78,5 +71,25 @@ public class ProjectVersionChange extends AnAction {
         return dependency -> !dependency.isParent();
     }
 
+    private Predicate<Dependency> skip(){
+        return dependency -> !filter.contains(dependency.getArtifactId().getText().trim().replaceAll("<artifactId>","")
+                .replaceAll("</artifactId>","").trim());
+    }
+
+    private Function<Dependency,Dependency> checkVersion(final String version){
+        return dependency -> {
+            if(dependency.getVersion()==null){
+                XmlTag parent = dependency.getArtifactId().getParentTag();
+                XmlTag versionTag = parent.createChildTag("version",parent.getNamespace(),version,false);
+                parent.addSubTag(versionTag,false);
+                dependency.setVersion(versionTag);
+            }
+            return dependency;
+        };
+    }
+
+    private Function<PomEntity,Stream<Dependency>> getAllDependency(){
+        return pomEntity -> pomEntity.getDependencies().stream();
+    }
 
 }
