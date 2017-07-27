@@ -40,8 +40,8 @@ public class ReflectUtil {
                          field.setAccessible(true);
                          field.set(t,in);
                          field.setAccessible(false);
-                    } catch (NoSuchFieldException |IllegalAccessException e) {
-                        throw new RuntimeException(e);
+                    } catch (NoSuchFieldException |IllegalAccessException ignored) {
+
                     }
 
 

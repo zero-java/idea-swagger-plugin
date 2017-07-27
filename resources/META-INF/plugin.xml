@@ -51,6 +51,11 @@
       <add-to-group group-id="GenerateGroup" anchor="last"/>
 
     </action>
+    <action id="peojectVersionChange" class="com.yazuo.xiaoya.plugins.xml.pom.ProjectVersionChange" text="修改项目版本号">
+
+      <add-to-group group-id="GenerateGroup" anchor="last"/>
+
+    </action>
     <action id="mavenVersionChange" class="com.yazuo.xiaoya.plugins.xml.pom.PomVersionChange" text="修改maven依赖版本" >
       <add-to-group group-id="RefactoringMenu" anchor="last"/>
     </action>
