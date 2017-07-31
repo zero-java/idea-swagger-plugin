@@ -50,7 +50,6 @@ public class ProjectVersionChange extends AnAction {
         WriteCommandAction.runWriteCommandAction(project,()-> files.stream()
                 .map(XmlFile::getRootTag)
                 .map(PomEntity::new)
-                .filter(PomEntity::isNotPom)
                 .flatMap(getAllDependency())
                 .filter(isNotParent())
                 .filter(isXiaoya())
@@ -89,7 +88,10 @@ public class ProjectVersionChange extends AnAction {
     }
 
     private Function<PomEntity,Stream<Dependency>> getAllDependency(){
-        return pomEntity -> pomEntity.getDependencies().stream();
+        return pomEntity -> {
+            if(pomEntity.isNotPom()) return pomEntity.getDependencies().stream();
+            return pomEntity.getOnlyDependencies().stream();
+        };
     }
 
 }

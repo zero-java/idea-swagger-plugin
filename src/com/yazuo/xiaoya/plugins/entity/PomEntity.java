@@ -49,14 +49,12 @@ public class PomEntity {
         if(parent!=null){
             this.parentDependency = stream(parent.getSubTags()).collect(ReflectUtil.toBean(Dependency::new, XmlTag::getLocalName));
             this.parentDependency.setTag(Dependency.PARENT);
-            dependencies.add(this.parentDependency);
         }
         // add self
         if(self.size()>0){
             XmlTag[] selfArray = new XmlTag[self.size()];
             this.selfDependency = stream(this.self.toArray(selfArray)).collect(ReflectUtil.toBean(Dependency::new, XmlTag::getLocalName));
             this.selfDependency.setTag(Dependency.SELF);
-            dependencies.add(this.selfDependency);
         }
     }
 
@@ -73,7 +71,13 @@ public class PomEntity {
     }
 
     public List<Dependency> getDependencies() {
+        if(!dependencies.contains(parentDependency)) dependencies.add(parentDependency);
+        if(dependencies.contains(selfDependency)) dependencies.add(selfDependency);
         return dependencies;
+    }
+
+    public List<Dependency> getOnlyDependencies(){
+        return this.dependencies;
     }
 
     /**
