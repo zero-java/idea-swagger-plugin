@@ -89,7 +89,11 @@ public class ProjectVersionChange extends AnAction {
 
     private Function<PomEntity,Stream<Dependency>> getAllDependency(){
         return pomEntity -> {
-            if(pomEntity.isNotPom()) return pomEntity.getDependencies().stream();
+            if(pomEntity.isNotPom()) {
+                List<Dependency> poms = pomEntity.getDependencies();
+                pomEntity.getSelfDependency().ifPresent(poms::add);
+                return poms.stream();
+            }
             return pomEntity.getOnlyDependencies().stream();
         };
     }
