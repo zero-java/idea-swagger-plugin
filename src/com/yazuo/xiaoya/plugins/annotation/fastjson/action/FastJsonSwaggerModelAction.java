@@ -1,4 +1,4 @@
-package com.yazuo.xiaoya.swagger.actions;
+package com.yazuo.xiaoya.plugins.annotation.fastjson.action;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
@@ -7,14 +7,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
-import com.yazuo.xiaoya.swagger.entity.FileClass;
-import com.yazuo.xiaoya.swagger.handler.AnnotationHandler;
-import com.yazuo.xiaoya.swagger.handler.ApiHandler;
-import com.yazuo.xiaoya.swagger.handler.ApiModelHandler;
-import com.yazuo.xiaoya.swagger.handler.JsonFieldHandler;
-import com.yazuo.xiaoya.swagger.utils.AnnotationUtil;
-
-import static com.intellij.icons.AllIcons.Icon;
+import com.yazuo.xiaoya.plugins.entity.FileClass;
+import com.yazuo.xiaoya.plugins.annotation.fastjson.JsonFieldHandler;
 
 /**
  * Created by scvzerng on 2017/7/6.

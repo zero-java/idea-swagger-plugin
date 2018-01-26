@@ -1,21 +1,26 @@
-package com.yazuo.xiaoya.swagger.handler;
+package com.yazuo.xiaoya.plugins.annotation.fastjson;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.yazuo.xiaoya.swagger.constanst.Constants;
-import com.yazuo.xiaoya.swagger.entity.Class;
-import com.yazuo.xiaoya.swagger.entity.Field;
+import com.yazuo.xiaoya.plugins.annotation.AbstractHandler;
+import com.yazuo.xiaoya.plugins.constanst.Constants;
+import com.yazuo.xiaoya.plugins.entity.Class;
+import com.yazuo.xiaoya.plugins.entity.Field;
+import com.yazuo.xiaoya.plugins.utils.AnnotationUtil;
+import com.yazuo.xiaoya.plugins.utils.StringUtils;
 
-import java.util.Optional;
+import java.util.*;
 
-import static com.yazuo.xiaoya.swagger.constanst.Constants.FAST_JSON_PREFIX;
-import static com.yazuo.xiaoya.swagger.constanst.Constants.SWAGGER_PREFIX;
+import static com.yazuo.xiaoya.plugins.constanst.Constants.FAST_JSON_PREFIX;
 
 /**
+ * @JSONField 处理
  * Created by scvzerng on 2017/7/6.
  */
 public class JsonFieldHandler extends AbstractHandler {
+    public static final String[] filter = {"com.alipay.api.internal.mapping.ApiField","com.alipay.api.internal.mapping.ApiListField"};
     private String format;
+    public static final String DATE = Date.class.getName();
     public JsonFieldHandler(Project project, Class clazz) {
         super(project, clazz);
     }
@@ -45,18 +50,20 @@ public class JsonFieldHandler extends AbstractHandler {
     public void addFieldAnnotation() {
         this.clazz.getFields().stream().filter(this::isNotExist).forEach(field->{
             PsiField psiField = field.getField();
-            Optional.ofNullable(field.getField().getModifierList().findAnnotation("com.alipay.api.internal.mapping.ApiField")).ifPresent(PsiElement::delete);
-            Optional.ofNullable(field.getField().getModifierList().findAnnotation("com.alipay.api.internal.mapping.ApiListField")).ifPresent(PsiElement::delete);
+            PsiModifierList modifierList = psiField.getModifierList();
+            Arrays.stream(filter).map(modifierList::findAnnotation).filter(Objects::nonNull).forEach(PsiElement::delete);
             String alternateNames = psiField.getName();
-            String name = alternateNames.replaceAll("([A-Z])","_$1").toLowerCase();
-            if(name.equals(alternateNames)) return ;
-            PsiAnnotation annotation = null;
-            if(psiField.getType().getCanonicalText().contains("java.util.Date")){
-                annotation  = elementFactory.createAnnotationFromText("@JSONField(name=\""+name+"\",alternateNames=\""+alternateNames+"\""+(format==null?"":"format=\""+format+"\"")+")",clazz.getPsiClass());
-            }else{
-                annotation  = elementFactory.createAnnotationFromText("@JSONField(name=\""+name+"\",alternateNames=\""+alternateNames+"\")",clazz.getPsiClass());
+            String name = StringUtils.humpToUnderLine(alternateNames);
+            String type = psiField.getType().getCanonicalText();
+            if(name.equals(alternateNames)&&!type.contains(DATE)) return ;
+            Map<String,String> params = new HashMap<>();
+            params.put("name",name);
+            params.put("alternateNames",alternateNames);
+            if(type.contains(DATE)&&format!=null){
+                params.put("format",format);
 
             }
+            PsiAnnotation annotation = elementFactory.createAnnotationFromText(AnnotationUtil.createAnnotationText("JSONField",params),clazz.getPsiClass());
             field.getDocument().addAnnotation(annotation);
         });
     }
