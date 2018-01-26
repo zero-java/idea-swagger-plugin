@@ -1,4 +1,4 @@
-package com.yazuo.xiaoya.swagger.entity;
+package com.yazuo.xiaoya.plugins.entity;
 
 import com.intellij.psi.PsiField;
 
@@ -7,8 +7,8 @@ import com.intellij.psi.PsiField;
  * Created with IntelliJ IDEA.
  * User: Administrator
  * Year: 2017-2017/6/24-12:51
- * Project:idea-swagger-plugin
- * Package:com.yazuo.xiaoya.swagger
+ * Project:idea-plugins-plugin
+ * Package:com.yazuo.xiaoya.plugins
  * To change this template use File | Settings | File Templates.
  */
 
