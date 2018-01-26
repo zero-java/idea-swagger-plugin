@@ -1,8 +1,8 @@
-package com.yazuo.xiaoya.swagger.entity;
+package com.yazuo.xiaoya.plugins.entity;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.javadoc.PsiDocTag;
-import com.yazuo.xiaoya.swagger.utils.CommonUtils;
+import com.yazuo.xiaoya.plugins.utils.CommonUtils;
 
 import static java.util.Arrays.stream;
 

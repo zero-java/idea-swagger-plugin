@@ -1,4 +1,4 @@
-package com.yazuo.xiaoya.swagger.utils;
+package com.yazuo.xiaoya.plugins.utils;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
@@ -9,8 +9,8 @@ import java.util.Objects;
  * Created with IntelliJ IDEA.
  * User: Administrator
  * Year: 2017-2017/6/24-23:15
- * Project:idea-swagger-plugin
- * Package:com.yazuo.xiaoya.swagger.utils
+ * Project:idea-plugins-plugin
+ * Package:com.yazuo.xiaoya.plugins.utils
  * To change this template use File | Settings | File Templates.
  */
 

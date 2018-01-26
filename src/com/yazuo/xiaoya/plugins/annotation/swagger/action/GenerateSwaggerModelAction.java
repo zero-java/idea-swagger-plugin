@@ -1,14 +1,14 @@
-package com.yazuo.xiaoya.swagger.actions;
+package com.yazuo.xiaoya.plugins.annotation.swagger.action;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.yazuo.xiaoya.swagger.entity.FileClass;
-import com.yazuo.xiaoya.swagger.handler.AnnotationHandler;
-import com.yazuo.xiaoya.swagger.handler.ApiHandler;
-import com.yazuo.xiaoya.swagger.handler.ApiModelHandler;
-import com.yazuo.xiaoya.swagger.utils.AnnotationUtil;
+import com.yazuo.xiaoya.plugins.entity.FileClass;
+import com.yazuo.xiaoya.plugins.annotation.AnnotationHandler;
+import com.yazuo.xiaoya.plugins.annotation.swagger.ApiHandler;
+import com.yazuo.xiaoya.plugins.annotation.swagger.ApiModelHandler;
+import com.yazuo.xiaoya.plugins.utils.AnnotationUtil;
 /**
  * 自动根据注释生成swagger注解
  * Created by scvzerng on 2017/6/20.

@@ -18,6 +18,11 @@
       <ul>
          <li><em>自动扫描关联实体添加注解</em></li>
       </ul>
+      功能新增:<br>
+      <ul>
+        <li><em>在pom.xml上右键Refactor选项中的修改maven依赖版本菜单填入需要修改的版本会将所有pom中的被选中依赖都修改为指定版本</em></li>
+      </ul>
+
     ]]>
   </change-notes>
 
@@ -36,16 +41,25 @@
 
   <actions>
     <!-- Add your actions here -->
-    <action id="swaggerDoc" class="com.yazuo.xiaoya.swagger.actions.GenerateSwaggerModelAction" text="生成swagger注解">
+    <action id="swaggerDoc" class="com.yazuo.xiaoya.plugins.annotation.swagger.action.GenerateSwaggerModelAction" text="生成swagger注解">
 
       <add-to-group group-id="GenerateGroup" anchor="last"/>
 
     </action>
-    <action id="fastjsonAnnotation" class="com.yazuo.xiaoya.swagger.actions.FastJsonSwaggerModelAction" text="生成fastjson注解">
+    <action id="fastjsonAnnotation" class="com.yazuo.xiaoya.plugins.annotation.fastjson.action.FastJsonSwaggerModelAction" text="生成fastjson注解">
 
       <add-to-group group-id="GenerateGroup" anchor="last"/>
 
     </action>
+    <action id="peojectVersionChange" class="com.yazuo.xiaoya.plugins.xml.pom.ProjectVersionChange" text="修改项目版本号">
+
+      <add-to-group group-id="GenerateGroup" anchor="last"/>
+
+    </action>
+    <action id="mavenVersionChange" class="com.yazuo.xiaoya.plugins.xml.pom.PomVersionChange" text="修改maven依赖版本" >
+      <add-to-group group-id="RefactoringMenu" anchor="last"/>
+    </action>
+
   </actions>
 
   <application-components>
