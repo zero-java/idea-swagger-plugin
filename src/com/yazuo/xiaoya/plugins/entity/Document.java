@@ -1,10 +1,10 @@
-package com.yazuo.xiaoya.swagger.entity;
+package com.yazuo.xiaoya.plugins.entity;
 
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.javadoc.PsiDocCommentImpl;
 import com.intellij.psi.impl.source.javadoc.PsiDocTokenImpl;
-import com.yazuo.xiaoya.swagger.utils.AnnotationUtil;
-import com.yazuo.xiaoya.swagger.utils.CommonUtils;
+import com.yazuo.xiaoya.plugins.utils.AnnotationUtil;
+import com.yazuo.xiaoya.plugins.utils.CommonUtils;
 
 import java.util.List;
 import java.util.Objects;

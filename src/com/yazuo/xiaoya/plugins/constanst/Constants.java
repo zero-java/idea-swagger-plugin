@@ -1,11 +1,11 @@
-package com.yazuo.xiaoya.swagger.constanst;
+package com.yazuo.xiaoya.plugins.constanst;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Administrator
  * Year: 2017-2017/6/24-14:10
- * Project:idea-swagger-plugin
- * Package:com.yazuo.xiaoya.swagger
+ * Project:idea-plugins-plugin
+ * Package:com.yazuo.xiaoya.plugins
  * To change this template use File | Settings | File Templates.
  */
 

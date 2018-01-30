@@ -1,4 +1,4 @@
-package com.yazuo.xiaoya.swagger.handler;
+package com.yazuo.xiaoya.plugins.annotation;
 
 
 /**

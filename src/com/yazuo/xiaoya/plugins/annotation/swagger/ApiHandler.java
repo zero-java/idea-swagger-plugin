@@ -1,27 +1,31 @@
-package com.yazuo.xiaoya.swagger.handler;
+package com.yazuo.xiaoya.plugins.annotation.swagger;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiElementFactory;
-import com.yazuo.xiaoya.swagger.entity.ApiOperation;
-import com.yazuo.xiaoya.swagger.entity.Class;
-import com.yazuo.xiaoya.swagger.entity.Document;
-import com.yazuo.xiaoya.swagger.entity.Method;
-import com.yazuo.xiaoya.swagger.utils.AnnotationUtil;
+import com.yazuo.xiaoya.plugins.annotation.swagger.entity.ApiOperation;
+import com.yazuo.xiaoya.plugins.entity.Class;
+import com.yazuo.xiaoya.plugins.entity.Document;
+import com.yazuo.xiaoya.plugins.entity.Method;
+import com.yazuo.xiaoya.plugins.utils.AnnotationUtil;
 
-import static com.yazuo.xiaoya.swagger.constanst.Constants.SWAGGER_PREFIX;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.yazuo.xiaoya.plugins.constanst.Constants.SWAGGER_PREFIX;
 
 /**
  * Api的实现可以自动扫描注释和spring mvc的注解来生成简单的swagger注解
  * Created with IntelliJ IDEA.
  * User: Administrator
  * Year: 2017-2017/6/24-19:41
- * Project:idea-swagger-plugin
- * Package:com.yazuo.xiaoya.swagger
+ * Project:idea-plugins-plugin
+ * Package:com.yazuo.xiaoya.plugins
  * To change this template use File | Settings | File Templates.
  */
 
 public class ApiHandler extends SwaggerAnnotationHandler {
+    public static final String API = "Api";
+    public static final String API_METHOD = "ApiOperation";
     public ApiHandler(Project project, Class clazz) {
         super(project, clazz);
     }
@@ -73,17 +77,18 @@ public class ApiHandler extends SwaggerAnnotationHandler {
     @Override
     public void addClassAnnotation() {
         if(AnnotationUtil.isRestController(this.clazz.getPsiClass())&&isNotExist(this.clazz)){
-
-            PsiAnnotation api = elementFactory.createAnnotationFromText("@Api"+(clazz.getDocument().firstLine()==""?"":String.format("(description=\"%s\")",clazz.getDocument().firstLine().trim())),clazz.getPsiClass());
+            Map<String,String> params = new HashMap<>();
+            params.put("description",clazz.getDocument().firstLine());
+            PsiAnnotation api = elementFactory.createAnnotationFromText(AnnotationUtil.createAnnotationText(API,params),clazz.getPsiClass());
            clazz.getDocument().addAnnotation(api);
         }
     }
 
     private boolean isNotExist(Method method){
-        return method.getMethod().getModifierList().findAnnotation(SWAGGER_PREFIX+".ApiOperation")==null;
+        return method.getMethod().getModifierList().findAnnotation(SWAGGER_PREFIX+"."+API_METHOD)==null;
     }
     private boolean isNotExist(Class clazz){
-        return clazz.getPsiClass().getModifierList().findAnnotation(SWAGGER_PREFIX+".Api")==null;
+        return clazz.getPsiClass().getModifierList().findAnnotation(SWAGGER_PREFIX+"."+API)==null;
     }
 
 
