@@ -30,7 +30,7 @@ public class ApiOperation {
 
     @Override
     public String toString() {
-        return String.format("@ApiOperation(value = \"%s\",notes = \"%s\",response =%s.class, httpMethod = \"%s\")",value,notes,response,httpMethod);
+        return String.format("@ApiOperation(value = \"%s\",notes = \"%s\",response =%s.class, httpMethod = \"%s\")",value.trim(),notes.trim(),response.trim(),httpMethod.trim());
     }
 
 
