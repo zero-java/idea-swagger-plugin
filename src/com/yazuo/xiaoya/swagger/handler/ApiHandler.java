@@ -74,7 +74,7 @@ public class ApiHandler extends SwaggerAnnotationHandler {
     public void addClassAnnotation() {
         if(AnnotationUtil.isRestController(this.clazz.getPsiClass())&&isNotExist(this.clazz)){
 
-            PsiAnnotation api = elementFactory.createAnnotationFromText("@Api"+(clazz.getDocument().firstLine()==""?"":String.format("(description=\"%s\")",clazz.getDocument().firstLine())),clazz.getPsiClass());
+            PsiAnnotation api = elementFactory.createAnnotationFromText("@Api"+(clazz.getDocument().firstLine()==""?"":String.format("(description=\"%s\")",clazz.getDocument().firstLine().trim())),clazz.getPsiClass());
            clazz.getDocument().addAnnotation(api);
         }
     }

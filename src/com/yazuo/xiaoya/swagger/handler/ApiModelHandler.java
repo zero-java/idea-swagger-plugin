@@ -26,7 +26,7 @@ public class ApiModelHandler extends SwaggerAnnotationHandler {
     @Override
     public void addFieldAnnotation() {
         this.clazz.getFields().stream().filter(this::isNotExist).map(Field::getDocument).forEach(doc->{
-            String annotationText = doc.getDescriptionText();
+            String annotationText = doc.getDescriptionText().trim();
             PsiAnnotation annotation = elementFactory.createAnnotationFromText("@ApiModelProperty"+(annotationText==""?"":String.format("(notes=\"%s\")",annotationText)),clazz.getPsiClass());
             doc.addAnnotation(annotation);
         });
@@ -34,7 +34,7 @@ public class ApiModelHandler extends SwaggerAnnotationHandler {
 
     @Override
     public void addClassAnnotation() {
-        String annotationText = getAnnotationText(clazz);
+        String annotationText = getAnnotationText(clazz).trim();
         if(annotations.findAnnotation(SWAGGER_PREFIX+".ApiModel")==null){
             PsiAnnotation annotation = elementFactory.createAnnotationFromText("@ApiModel"+(annotationText==""?"":String.format("(description=\"%s\")",annotationText)),clazz.getPsiClass());
             this.clazz.getDocument().addAnnotation(annotation);
@@ -43,7 +43,7 @@ public class ApiModelHandler extends SwaggerAnnotationHandler {
     }
 
     private String getAnnotationText(Class clazz){
-        return clazz.getDocument().firstLine();
+        return clazz.getDocument().firstLine().trim();
     }
     private boolean isNotExist(Field field){
         return field.getField().getModifierList().findAnnotation(Constants.SWAGGER_PREFIX+".ApiModelProperty")==null;
